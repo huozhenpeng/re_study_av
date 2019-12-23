@@ -11,6 +11,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        //最好在app和module中都配置
+        ndk {
+            abiFilters 'armeabi-v7a','x86'
+        }
+
     }
     buildTypes {
         release {
@@ -18,7 +23,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {

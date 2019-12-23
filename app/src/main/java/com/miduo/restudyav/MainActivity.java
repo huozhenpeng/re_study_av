@@ -19,5 +19,6 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = findViewById(R.id.sample_text);
         Player player=new Player();
         tv.setText(player.stringFromJNI());
+        player.printCodec();
     }
 }
