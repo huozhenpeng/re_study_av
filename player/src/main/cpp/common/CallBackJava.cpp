@@ -1,0 +1,43 @@
+//
+// Created by 霍振鹏 on 2019-12-24.
+//
+
+#include "CallBackJava.h"
+#include "../head/log.h"
+
+CallBackJava::CallBackJava(JavaVM *vm, JNIEnv *env, jobject job) {
+
+    javaVm=vm;
+    jniEnv=env;
+    instance=job;
+    jclass jcl=env->GetObjectClass(job);
+    //现在的androidstudio好智能，java端不写这个方法也会报错
+    jmd=env->GetMethodID(jcl,"callBackJava","(ILjava/lang/String;)V");
+}
+
+void CallBackJava::onCallBack(int type, int code, const char *msg) {
+
+    if(type==CHILD_THREAD)
+    {
+        //重新给jniEnv赋值
+        javaVm->AttachCurrentThread(&jniEnv,0);
+        //构造返回给java的字符串
+        jstring  jsr=jniEnv->NewStringUTF(msg);
+        jniEnv->CallVoidMethod(instance,jmd,code,jsr);
+        //释放jstring
+        jniEnv->DeleteLocalRef(jsr);
+        javaVm->DetachCurrentThread();
+    } else if(type==MAIN_THREAD)
+    {
+        jstring  jsr=jniEnv->NewStringUTF(msg);
+        jniEnv->CallVoidMethod(instance,jmd,code,jsr);
+        //释放jstring
+        jniEnv->DeleteLocalRef(jsr);
+    }
+}
+
+CallBackJava::~CallBackJava() {
+
+    LOGI("CallBackJava 析构函数执行了");
+
+}

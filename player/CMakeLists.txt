@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.4.1)
 #导入include路径
 include_directories(src/main/cpp/include/ffmpeg)
 
+
+
 add_library( # Sets the name of the library.
         native-lib
 
@@ -11,7 +13,12 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/native-lib.cpp)
+        src/main/cpp/native-lib.cpp
+        src/main/cpp/native-lib-demo.cpp
+        src/main/cpp/common/CallBackJava.cpp
+        src/main/cpp/HFFmpeg.cpp
+        src/main/cpp/HAudio.cpp
+        )
 
 
 

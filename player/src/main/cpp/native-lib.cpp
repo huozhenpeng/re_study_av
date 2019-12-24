@@ -1,48 +1,65 @@
 #include <jni.h>
 #include <string>
 
-
-#include <android/log.h>
-//在jni中输出日志
-#define LOGI(FORMAT,...) __android_log_print(ANDROID_LOG_INFO,"VoicePlayer",FORMAT,##__VA_ARGS__);
+#include "head/log.h"
+#include "HFFmpeg.h"
 
 
 extern "C"
 {
+    //CMakeLists中配置了include_directories(src/main/cpp/include/ffmpeg)，所以可以这么写
   #include <libavformat/avformat.h>
 }
 
 
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_miduo_player_Player_stringFromJNI(JNIEnv *env, jobject thiz) {
-    std::string hello = "Hello from C++";
 
-    return env->NewStringUTF(hello.c_str());
+JNIEXPORT void JNICALL
+JNI_OnUnload(JavaVM *vm,void* reserved)
+{
+
 }
 
+JavaVM *javaVm;
 /**
- * 打印ffmpeg支持的解码器
+ * 主要是获取JavaVM，供子线程构建JNIEnv使用
+ * @param vm
+ * @param reserved
+ * @return
  */
+JNIEXPORT jint JNICALL
+JNI_OnLoad(JavaVM *vm,void* reserved)
+{
+    JNIEnv *env;
+    javaVm=vm;
+    if(vm->GetEnv((void **)(&env), JNI_VERSION_1_6) != JNI_OK)
+    {
+        return -1;
+    }
+    return JNI_VERSION_1_6;
+}
+
+
+HFFmpeg *hFFmpeg=NULL;
+CallBackJava *callBackJava=NULL;
+
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_miduo_player_Player_printCodec(JNIEnv *env, jobject thiz) {
-    av_register_all();
-    AVCodec *codec=av_codec_next(NULL);
-    while (codec!=NULL)
+Java_com_miduo_player_Player_prepare(JNIEnv *env, jobject thiz, jstring url) {
+
+    const  char* path=env->GetStringUTFChars(url,0);
+    //需要优化不
+    //这个path在哪释放啊
+
+    if(hFFmpeg==NULL)
     {
-        switch (codec->type)
+        if(callBackJava==NULL)
         {
-            case AVMEDIA_TYPE_VIDEO:
-                LOGI("[Video]:%s",codec->name);
-                break;
-            case AVMEDIA_TYPE_AUDIO:
-                LOGI("[Audio]:%s", codec->name);
-                break;
-            default:
-                LOGI("[Other]:%s", codec->name);
-                break;
+            callBackJava=new CallBackJava(javaVm,env,env->NewGlobalRef(thiz));
+            //需要释放不
+            //在哪儿释放这个全局引用啊
         }
-        codec=codec->next;
+        hFFmpeg=new HFFmpeg(path,callBackJava);
+        hFFmpeg->prepare();
     }
+
 }
