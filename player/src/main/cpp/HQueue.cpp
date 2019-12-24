@@ -67,6 +67,7 @@ int HQueue::getAVPacket(AVPacket *avPacket) {
 
 /**
  * 完了试验下能用不
+ * 试了一下，不能用，完了再查原因吧
  * @return
  */
 AVPacket* HQueue::getAVPacket2() {

@@ -29,6 +29,7 @@ public:
     uint8_t  *buffer=NULL;
 
     bool LOG_DEBUG=true;
+    int data_size=0;
 
 public:
     HAudio(HPlayStatus *hPlayStatus);
@@ -39,6 +40,8 @@ public:
 //    void * consumer(void *data);
 
     void start();
+
+    int resampleAudio(HAudio *hAudio);
 };
 
 

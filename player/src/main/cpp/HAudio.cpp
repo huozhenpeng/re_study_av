@@ -3,6 +3,7 @@
 //
 #include "HAudio.h"
 #include "head/log.h"
+#include "HOpenslEs.h"
 
 extern "C"
 {
@@ -68,12 +69,24 @@ void * product(void *data) {
     pthread_exit(&hAudio->pthread_product);
 }
 
-FILE *outFile=fopen("/storage/emulated/0/voiceplayer.pcm","w");
+//FILE *outFile=fopen("/storage/emulated/0/voiceplayer.pcm","w");
 void * consumer(void *data) {
     HAudio *hAudio= (HAudio *)(data);
+    HOpenslEs *hOpenslEs=new HOpenslEs(hAudio,44100);
+    hOpenslEs->initOpenSLES();
+    pthread_exit(&hAudio->pthread_consumer);
+}
+
+
+void HAudio::start() {
+    pthread_create(&pthread_product,NULL,product,this);
+    pthread_create(&pthread_consumer,NULL,consumer,this);
+}
+
+int HAudio::resampleAudio(HAudio *hAudio) {
     if(hAudio->LOG_DEBUG)
     {
-        LOGI("开始吸入pcm数据");
+        LOGI("开始写入pcm数据");
     }
     while (hAudio->playStatus!=NULL&&!hAudio->playStatus->exit)
     {
@@ -126,7 +139,7 @@ void * consumer(void *data) {
                     avFrame->sample_rate,
                     NULL,
                     NULL
-                    );
+            );
             if(!swrContext||swr_init(swrContext)<0)
             {
                 av_packet_free(&avPacket);
@@ -146,13 +159,13 @@ void * consumer(void *data) {
                     avFrame->nb_samples,
                     (const uint8_t **)(avFrame->data),
                     avFrame->nb_samples
-                    );
+            );
 
             int out_channels=av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
 
-            int data_size=nb*out_channels*av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+            data_size=nb*out_channels*av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
 
-            fwrite(hAudio->buffer,1,data_size,outFile);
+            //fwrite(hAudio->buffer,1,data_size,outFile);
 
             if(hAudio->LOG_DEBUG)
             {
@@ -179,14 +192,8 @@ void * consumer(void *data) {
             avFrame=NULL;
             continue;
         }
+        return data_size;
     }
-    pthread_exit(&hAudio->pthread_consumer);
-}
-
-
-void HAudio::start() {
-    pthread_create(&pthread_product,NULL,product,this);
-    pthread_create(&pthread_consumer,NULL,consumer,this);
 }
 
 
