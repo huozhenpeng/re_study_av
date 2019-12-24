@@ -8,6 +8,7 @@
 
 #include "common/CallBackJava.h"
 #include "HAudio.h"
+#include "HPlayStatus.h"
 
 extern "C"
 {
@@ -25,18 +26,20 @@ public:
     //用于回调Java层代码的类
     CallBackJava *callBackJava=NULL;
 
-    //解码线程
-    pthread_t pthread_decode=NULL;
+    //解码准备工作线程
+    pthread_t pthread_decode;
 
     HAudio *hAudio=NULL;
 
     AVFormatContext *avFormatContext=NULL;
 
+    HPlayStatus *playStatus=NULL;
+
     bool LOG_DEBUG=true;
 
 public:
 
-    HFFmpeg(const char* url,CallBackJava *callBackJava);
+    HFFmpeg(const char* url,CallBackJava *callBackJava,HPlayStatus *hPlayStatus);
 
     ~HFFmpeg();
 
@@ -55,8 +58,6 @@ public:
        * 解码线程的回调方法
        */
       void decode();
-
-
 
 
 

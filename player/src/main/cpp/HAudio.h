@@ -1,14 +1,17 @@
 //
 // Created by 霍振鹏 on 2019-12-24.
-// 负责记录解码后获取到的音频通道索引号、解码器上下文、解码器参数
+// 负责记录解码后获取到的音频通道索引号、解码器上下文、解码器参数，音频重采样
 //
 
 #ifndef RESTUDYAV_HAUDIO_H
 #define RESTUDYAV_HAUDIO_H
 
+#include "HQueue.h"
+
 extern "C"
 {
 #include "libavcodec/avcodec.h"
+#include <libavformat/avformat.h>
 };
 
 class HAudio {
@@ -17,10 +20,25 @@ public:
     int streamIndex=-1;
     AVCodecParameters *avCodecParameters=NULL;
     AVCodecContext *avCodecContext=NULL;
+    AVFormatContext *avFormatContext=NULL;
+    HQueue *hQueue=NULL;
+    HPlayStatus *playStatus=NULL;
+    //我觉得生产者、消费者都由这个类来负责吧
+    pthread_t  pthread_product;
+    pthread_t  pthread_consumer;
+    uint8_t  *buffer=NULL;
+
+    bool LOG_DEBUG=true;
 
 public:
-    HAudio();
+    HAudio(HPlayStatus *hPlayStatus);
     ~HAudio();
+
+    //线程方法不能是成员方法，要不然报错
+//    void * product(void *data);
+//    void * consumer(void *data);
+
+    void start();
 };
 
 

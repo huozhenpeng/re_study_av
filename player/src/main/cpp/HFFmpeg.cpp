@@ -5,16 +5,18 @@
 #include "HFFmpeg.h"
 #include "head/log.h"
 
-HFFmpeg::HFFmpeg(const char *url, CallBackJava *callBackJava) {
+HFFmpeg::HFFmpeg(const char *url, CallBackJava *callBackJava,HPlayStatus *hPlayStatus) {
 
     this->url=url;
     this->callBackJava=callBackJava;
+    this->playStatus=hPlayStatus;
 }
 
 HFFmpeg::~HFFmpeg() {
 
 }
 
+//如果不这样传参数的话，decode方法，只有在头文件中声明的方法才可以直接访问
 void *decodeFFmpeg(void *data)
 {
     HFFmpeg *hfFmpeg= (HFFmpeg *)(data);
@@ -23,13 +25,23 @@ void *decodeFFmpeg(void *data)
     pthread_exit(&hfFmpeg->pthread_decode);
 }
 
+
 void HFFmpeg::prepare() {
 
-    //初始化解码线程
+    //初始化解码准备工作线程
     pthread_create(&pthread_decode,NULL,decodeFFmpeg,this);
 }
 
+
+
 void HFFmpeg::start() {
+
+    if(hAudio==NULL)
+    {
+        LOGI("audio对象不能为NULL");
+        return;
+    }
+    hAudio->start();
 
 }
 
@@ -75,9 +87,11 @@ void HFFmpeg::decode() {
             //将相关音频信息记录到HAudio类中
             if(hAudio==NULL)
             {
-                hAudio=new HAudio();
+                hAudio=new HAudio(playStatus);
                 hAudio->streamIndex=i;
                 hAudio->avCodecParameters=avFormatContext->streams[i]->codecpar;
+                hAudio->avFormatContext=avFormatContext;
+
             }
         }
     }
@@ -132,3 +146,8 @@ void HFFmpeg::decode() {
     const char* msg="解码音频的准备工作已经完成";
     callBackJava->onCallBack(0,200,msg);
 }
+
+
+
+
+

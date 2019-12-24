@@ -28,11 +28,24 @@ public class Player {
      */
     public native void printCodec();
 
+    /**
+     * 开始解码操作
+     */
+    public native void start();
+
     public void callBackJava(int code,String msg)
     {
         if(debug)
         {
             Log.e(Tag,"code:"+code+"------msg:"+msg);
+        }
+        if(code==200)
+        {
+            if(debug)
+            {
+                Log.e(Tag,"解码器已经准备好了，开始解码了");
+            }
+            start();
         }
     }
 }

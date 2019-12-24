@@ -1,0 +1,7 @@
+
+报错：error: reference to non-static member function must be called
+
+参考：https://blog.csdn.net/hsd2012/article/details/51207585
+
+mac播放pcm，需要VLC软件，命令行运行：
+/Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 2 --rawaud-samplerate 48000 /Users/huozhenpeng/Desktop/voiceplayer.pcm

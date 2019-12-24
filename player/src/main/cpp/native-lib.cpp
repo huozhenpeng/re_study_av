@@ -58,8 +58,15 @@ Java_com_miduo_player_Player_prepare(JNIEnv *env, jobject thiz, jstring url) {
             //需要释放不
             //在哪儿释放这个全局引用啊
         }
-        hFFmpeg=new HFFmpeg(path,callBackJava);
+        HPlayStatus *hPlayStatus=new HPlayStatus();
+        hFFmpeg=new HFFmpeg(path,callBackJava,hPlayStatus);
         hFFmpeg->prepare();
     }
 
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_start(JNIEnv *env, jobject thiz) {
+    hFFmpeg->start();
 }
