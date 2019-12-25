@@ -77,6 +77,8 @@ public:
 
     void stop();
 
+    void release();
+
 };
 
 

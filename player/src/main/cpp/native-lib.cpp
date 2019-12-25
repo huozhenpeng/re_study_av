@@ -41,6 +41,7 @@ JNI_OnLoad(JavaVM *vm,void* reserved)
 
 HFFmpeg *hFFmpeg=NULL;
 CallBackJava *callBackJava=NULL;
+HPlayStatus *hPlayStatus=NULL;
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -58,7 +59,7 @@ Java_com_miduo_player_Player_prepare(JNIEnv *env, jobject thiz, jstring url) {
             //需要释放不
             //在哪儿释放这个全局引用啊
         }
-        HPlayStatus *hPlayStatus=new HPlayStatus();
+        hPlayStatus=new HPlayStatus();
         hFFmpeg=new HFFmpeg(path,callBackJava,hPlayStatus);
         hFFmpeg->prepare();
     }
@@ -87,4 +88,21 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_miduo_player_Player_stop(JNIEnv *env, jobject thiz) {
     hFFmpeg->stop();
+    hFFmpeg->release();
+    if(callBackJava!=NULL)
+    {
+        delete(callBackJava);
+        callBackJava=NULL;
+    }
+    if(hPlayStatus!=NULL)
+    {
+        delete(hPlayStatus);
+        hPlayStatus=NULL;
+    }
+    if(hFFmpeg!=NULL)
+    {
+        delete(hFFmpeg);
+        hFFmpeg=NULL;
+    }
+
 }

@@ -386,6 +386,54 @@ void HAudio::stop() {
 
 }
 
+void HAudio::release() {
+    if(hQueue!=NULL)
+    {
+        delete(hQueue);
+        hQueue=NULL;
+    }
+    if(pcmPlayerObject!=NULL)
+    {
+        (*pcmPlayerObject)->Destroy(pcmPlayerObject);
+        pcmPlayerObject=NULL;
+        pcmPlayerPlay=NULL;
+        pcmBufferQueue=NULL;
+    }
+    if(outputMixObject!=NULL)
+    {
+        (*outputMixObject)->Destroy(outputMixObject);
+        outputMixObject=NULL;
+        outputMixEnvironmentalReverb=NULL;
+    }
+    if(engineObject!=NULL)
+    {
+        (*engineObject)->Destroy(engineObject);
+        engineObject=NULL;
+        engineEngine=NULL;
+    }
+    if(buffer!=NULL)
+    {
+        free(buffer);
+        buffer=NULL;
+    }
+    if(avCodecContext!=NULL)
+    {
+        avcodec_close(avCodecContext);
+        avcodec_free_context(&avCodecContext);
+        avCodecContext=NULL;
+    }
+    if(playStatus!=NULL)
+    {
+        playStatus=NULL;
+    }
+    if(callBackJava!=NULL)
+    {
+        callBackJava=NULL;
+    }
+
+
+}
+
 
 
 

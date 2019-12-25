@@ -76,6 +76,11 @@ public:
        */
       void stop();
 
+      /**
+       * 释放资源
+       */
+      void release();
+
 
 
 };

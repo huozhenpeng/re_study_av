@@ -166,6 +166,43 @@ void HFFmpeg::stop() {
     hAudio->stop();
 }
 
+void HFFmpeg::release() {
+
+    if(LOG_DEBUG)
+    {
+        LOGI("开始释放FFmpeg");
+    }
+    if(playStatus->exit)
+    {
+        return;
+    }
+    playStatus->exit=true;
+
+    if(hAudio!=NULL)
+    {
+        LOGI("开始释放audio");
+        hAudio->release();
+        delete(hAudio);
+        hAudio=NULL;
+    }
+    if(avFormatContext!=NULL)
+    {
+        LOGI("开始释放avFormatContext");
+        avformat_close_input(&avFormatContext);
+        avformat_free_context(avFormatContext);
+        avFormatContext=NULL;
+    }
+    if(callBackJava!=NULL)
+    {
+        LOGI("开始释放callBackJava");
+        callBackJava=NULL;
+    }
+    if(playStatus!=NULL)
+    {
+        LOGI("开始释放playStatus");
+    }
+}
+
 
 
 
