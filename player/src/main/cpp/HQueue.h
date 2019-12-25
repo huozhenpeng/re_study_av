@@ -23,6 +23,7 @@ public:
     pthread_mutex_t pthreadMutex;
     pthread_cond_t pthreadCond;
 
+
     //创建一个队列，这就算是创建好了
     std::queue<AVPacket*> queue;
     HPlayStatus *playStatus;
@@ -38,6 +39,8 @@ public:
     int getQueueSize();
 
     AVPacket * getAVPacket2();
+
+    void clearAvPacket();
 
 };
 

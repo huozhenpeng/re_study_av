@@ -4,6 +4,7 @@
 #include "HAudio.h"
 
 HAudio::HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava) {
+    pthread_mutex_init(&pthreadSeekMutex,NULL);
     this->playStatus=hPlayStatus;
     this->hQueue=new HQueue(hPlayStatus);
     this->callBackJava=callBackJava;
@@ -21,9 +22,27 @@ void * product(void *data) {
     int count=0;
     while (hAudio->playStatus!=NULL&&!hAudio->playStatus->exit)
     {
+        //如果是在seek的话，就暂停解码操作，我们在seek的时候还需要清空队列，所以就不要再解码了
+        if(hAudio->playStatus->seek)
+        {
+            continue;
+        }
+        /**
+         * 这个代码很关键
+         * 测试发现解码过程还是比较快的，如果在seek的时候，解码已经完成，seek我们是做了清空队列的操作的，这样的话，
+         * seek之后调用av_read_frame的时候，由于已经到了文件末尾就会返回0，最终导致hPlayStatus->exit=true;
+         * 所以我们加上这个队列大小限制，不要让一直解码
+         */
+        if(hAudio->hQueue->getQueueSize()>40)
+        {
+            continue;
+        }
         AVPacket *avPacket=av_packet_alloc();
         //0 if OK, < 0 on error or end of file
-        if(av_read_frame(hAudio->avFormatContext,avPacket)==0)
+        pthread_mutex_lock(&hAudio->pthreadSeekMutex);
+        int ret=av_read_frame(hAudio->avFormatContext,avPacket);
+        pthread_mutex_unlock(&hAudio->pthreadSeekMutex);
+        if(ret==0)
         {
             if(avPacket->stream_index==hAudio->streamIndex)
             {
@@ -91,6 +110,10 @@ int resampleAudio(HAudio *hAudio) {
         if(hAudio->LOG_DEBUG)
         {
             LOGI("消费者进入循环");
+        }
+        if(hAudio->playStatus->seek)
+        {
+            continue;
         }
         AVPacket *avPacket=av_packet_alloc();
         if(hAudio->hQueue->getAVPacket(avPacket)!=0)
@@ -386,6 +409,29 @@ void HAudio::stop() {
 
 }
 
+void HAudio::seek(int second) {
+
+    if(duration<=0)
+    {
+        return;
+    }
+    if(second>=0&&second<=duration)
+    {
+        playStatus->seek=true;
+        //清空队列，要不然队列中有残余数据
+        hQueue->clearAvPacket();
+        clock=0;
+        last_time=0;
+        //在执行清空操作的时候，让生成packet的线程先阻塞
+        pthread_mutex_lock(&pthreadSeekMutex);
+        int64_t rel=second*AV_TIME_BASE;
+        avformat_seek_file(avFormatContext,-1,INT64_MIN,rel,INT64_MAX,0);
+        pthread_mutex_unlock(&pthreadSeekMutex);
+        playStatus->seek= false;
+    }
+
+}
+
 void HAudio::release() {
     if(hQueue!=NULL)
     {
@@ -433,6 +479,8 @@ void HAudio::release() {
 
 
 }
+
+
 
 
 

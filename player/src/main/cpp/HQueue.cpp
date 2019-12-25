@@ -103,3 +103,22 @@ int HQueue::getQueueSize() {
     pthread_mutex_unlock(&pthreadMutex);
     return size;
 }
+
+void HQueue::clearAvPacket() {
+    //竟然可以放在lock之外，跟java好大区别啊
+    pthread_cond_signal(&pthreadCond);
+
+    //上锁，让生产者、消费者都阻塞
+    pthread_mutex_lock(&pthreadMutex);
+    while (!queue.empty())
+    {
+        AVPacket *avPacket=queue.front();
+        queue.pop();
+        av_packet_free(&avPacket);
+        av_free(avPacket);
+        avPacket=NULL;
+    }
+    //解锁
+    pthread_mutex_unlock(&pthreadMutex);
+
+}

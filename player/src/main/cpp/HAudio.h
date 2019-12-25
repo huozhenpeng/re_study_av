@@ -35,6 +35,8 @@ public:
 
     bool LOG_DEBUG=true;
 
+    pthread_mutex_t pthreadSeekMutex;
+
 
 
     int sample_rate;
@@ -78,6 +80,8 @@ public:
     void stop();
 
     void release();
+
+    void seek(int second);
 
 };
 

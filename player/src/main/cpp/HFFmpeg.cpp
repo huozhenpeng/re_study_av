@@ -203,6 +203,12 @@ void HFFmpeg::release() {
     }
 }
 
+void HFFmpeg::seek(int second) {
+
+    hAudio->seek(second);
+
+}
+
 
 
 

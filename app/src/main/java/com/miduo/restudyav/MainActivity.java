@@ -97,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
                 player.stop();
             }
         });
+
+        final Button seek=findViewById(R.id.seek);
+        seek.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                player.seek(100);
+            }
+        });
     }
 
     private static String[] PERMISSIONS_STORAGE = {

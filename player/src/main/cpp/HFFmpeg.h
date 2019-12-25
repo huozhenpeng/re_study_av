@@ -81,6 +81,11 @@ public:
        */
       void release();
 
+      /**
+       *
+       */
+      void seek(int second);
+
 
 
 };

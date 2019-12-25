@@ -11,6 +11,8 @@ class HPlayStatus {
 public:
     bool exit= false;
 
+    bool seek= false;
+
 public:
 
     HPlayStatus();

@@ -55,6 +55,10 @@ public class Player {
 
     }
 
+    public native void seek(int second);
+
+
+
     public native void pause();
 
     public native void resume() ;

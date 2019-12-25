@@ -76,4 +76,14 @@
         app:layout_constraintTop_toBottomOf="@id/resume"
         />
 
+    <Button
+        android:id="@+id/seek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="seek"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stop"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
