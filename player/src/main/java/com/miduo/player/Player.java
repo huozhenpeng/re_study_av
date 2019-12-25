@@ -55,6 +55,12 @@ public class Player {
 
     }
 
+    public void onPlayComplete(int code,String msg)
+    {
+        Log.e(Tag,msg);
+        stop();
+    }
+
     public native void seek(int second);
 
 

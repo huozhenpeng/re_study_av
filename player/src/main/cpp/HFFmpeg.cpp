@@ -172,10 +172,11 @@ void HFFmpeg::release() {
     {
         LOGI("开始释放FFmpeg");
     }
-    if(playStatus->exit)
-    {
-        return;
-    }
+    //如果是自己播放完成主动释放呢？，这儿还有问题
+//    if(playStatus->exit)
+//    {
+//        return;
+//    }
     playStatus->exit=true;
 
     if(hAudio!=NULL)

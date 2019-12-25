@@ -69,6 +69,8 @@ void * product(void *data) {
             {
                 if(hAudio->hQueue->getQueueSize()>0)
                 {
+                    //如果对列中还有数据没有播放完成，就循环等待，并没有清空队列
+                    //所以在下面才可以进行播放完成回调
                     continue;
                 } else{
                     hAudio->playStatus->exit=true;
@@ -81,6 +83,9 @@ void * product(void *data) {
     {
         LOGI("解码完成");
     }
+    //这儿可以回调Java层，通知播放完成
+    hAudio->callBackJava->onPlayComplete(CHILD_THREAD,200,"播放完成");
+
     pthread_exit(&hAudio->pthread_product);
 }
 

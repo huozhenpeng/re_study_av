@@ -21,6 +21,7 @@ public:
     jobject instance=NULL;
     jmethodID jmd=NULL;
     jmethodID  jmd_time=NULL;
+    jmethodID  jmd_complete=NULL;
 
 public:
     CallBackJava(JavaVM *vm,JNIEnv *env,jobject job);
@@ -36,6 +37,8 @@ public:
     void onCallBack(int type,int code, const char *msg);
 
     void onShowTime(int type,int code, int total,int current);
+
+    void onPlayComplete(int type,int code,const char *msg);
 
 
 };

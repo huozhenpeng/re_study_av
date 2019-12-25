@@ -13,6 +13,7 @@ CallBackJava::CallBackJava(JavaVM *vm, JNIEnv *env, jobject job) {
     jclass jcl=env->GetObjectClass(job);
     //现在的androidstudio好智能，java端不写这个方法也会报错
     jmd=env->GetMethodID(jcl,"callBackJava","(ILjava/lang/String;)V");
+    jmd_complete=env->GetMethodID(jcl,"onPlayComplete","(ILjava/lang/String;)V");
     jmd_time=env->GetMethodID(jcl,"onShowTime","(III)V");
 }
 
@@ -57,3 +58,26 @@ void CallBackJava::onShowTime(int type, int code, int total, int current) {
         jniEnv->CallVoidMethod(instance,jmd_time,code,total,current);
     }
 }
+
+
+void CallBackJava::onPlayComplete(int type, int code, const char *msg) {
+
+    if(type==CHILD_THREAD)
+    {
+        //重新给jniEnv赋值
+        javaVm->AttachCurrentThread(&jniEnv,0);
+        //构造返回给java的字符串
+        jstring  jsr=jniEnv->NewStringUTF(msg);
+        jniEnv->CallVoidMethod(instance,jmd_complete,code,jsr);
+        //释放jstring
+        jniEnv->DeleteLocalRef(jsr);
+        javaVm->DetachCurrentThread();
+    } else if(type==MAIN_THREAD)
+    {
+        jstring  jsr=jniEnv->NewStringUTF(msg);
+        jniEnv->CallVoidMethod(instance,jmd_complete,code,jsr);
+        //释放jstring
+        jniEnv->DeleteLocalRef(jsr);
+    }
+}
+

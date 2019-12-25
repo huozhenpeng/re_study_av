@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.seek(100);
+                player.seek(270);
             }
         });
     }
