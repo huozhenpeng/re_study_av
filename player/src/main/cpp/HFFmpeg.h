@@ -37,6 +37,8 @@ public:
 
     bool LOG_DEBUG=true;
 
+
+
 public:
 
     HFFmpeg(const char* url,CallBackJava *callBackJava,HPlayStatus *hPlayStatus);
@@ -68,6 +70,11 @@ public:
        * 恢复播放
        */
       void resume();
+
+      /**
+       * 停止播放，释放内存
+       */
+      void stop();
 
 
 

@@ -8,6 +8,7 @@
 
 #include "HQueue.h"
 #include "head/log.h"
+#include "common/CallBackJava.h"
 
 extern "C"
 {
@@ -51,8 +52,15 @@ public:
     SLAndroidSimpleBufferQueueItf pcmBufferQueue;
 
 
+    int duration=0;
+    AVRational time_base;
+    double clock=0;
+    double  last_time=0;
+
+    CallBackJava *callBackJava;
+
 public:
-    HAudio(HPlayStatus *hPlayStatus);
+    HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava);
     ~HAudio();
 
     void initOpenSLES();
@@ -66,6 +74,9 @@ public:
     void pause();
 
     void resume();
+
+    void stop();
+
 };
 
 

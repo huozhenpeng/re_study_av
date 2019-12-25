@@ -14,7 +14,7 @@ public class Player {
     }
 
     private boolean debug=true;
-    private String Tag="Player";
+    private String Tag="JavaPlayer";
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -37,19 +37,27 @@ public class Player {
     {
         if(debug)
         {
-            Log.e(Tag,"code:"+code+"------msg:"+msg);
+            //Log.e(Tag,"code:"+code+"------msg:"+msg);
         }
         if(code==200)
         {
             if(debug)
             {
-                Log.e(Tag,"解码器已经准备好了，开始解码了");
+                //Log.e(Tag,"解码器已经准备好了，开始解码了");
             }
             start();
         }
     }
 
+    public void onShowTime(int code,int total,int current)
+    {
+        Log.e(Tag,"total==>"+total+"current===>"+current);
+
+    }
+
     public native void pause();
 
     public native void resume() ;
+
+    public native void stop();
 }

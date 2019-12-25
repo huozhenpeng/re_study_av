@@ -82,3 +82,9 @@ JNIEXPORT void JNICALL
 Java_com_miduo_player_Player_resume(JNIEnv *env, jobject thiz) {
     hFFmpeg->resume();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_stop(JNIEnv *env, jobject thiz) {
+    hFFmpeg->stop();
+}

@@ -87,11 +87,15 @@ void HFFmpeg::decode() {
             //将相关音频信息记录到HAudio类中
             if(hAudio==NULL)
             {
-                hAudio=new HAudio(playStatus);
+                hAudio=new HAudio(playStatus,callBackJava);
                 hAudio->streamIndex=i;
                 hAudio->avCodecParameters=avFormatContext->streams[i]->codecpar;
                 hAudio->avFormatContext=avFormatContext;
 
+
+                //统计播放时长
+                hAudio->duration=avFormatContext->duration/AV_TIME_BASE;
+                hAudio->time_base=avFormatContext->streams[i]->time_base;
             }
         }
     }
@@ -155,6 +159,11 @@ void HFFmpeg::pause() {
 void HFFmpeg::resume() {
     hAudio->resume();
 
+}
+
+void HFFmpeg::stop() {
+
+    hAudio->stop();
 }
 
 

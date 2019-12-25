@@ -13,6 +13,7 @@ CallBackJava::CallBackJava(JavaVM *vm, JNIEnv *env, jobject job) {
     jclass jcl=env->GetObjectClass(job);
     //现在的androidstudio好智能，java端不写这个方法也会报错
     jmd=env->GetMethodID(jcl,"callBackJava","(ILjava/lang/String;)V");
+    jmd_time=env->GetMethodID(jcl,"onShowTime","(III)V");
 }
 
 void CallBackJava::onCallBack(int type, int code, const char *msg) {
@@ -40,4 +41,19 @@ CallBackJava::~CallBackJava() {
 
     LOGI("CallBackJava 析构函数执行了");
 
+}
+
+void CallBackJava::onShowTime(int type, int code, int total, int current) {
+    if(type==CHILD_THREAD)
+    {
+        //重新给jniEnv赋值
+        javaVm->AttachCurrentThread(&jniEnv,0);
+
+        jniEnv->CallVoidMethod(instance,jmd_time,code,total,current);
+        //释放jstring
+        javaVm->DetachCurrentThread();
+    } else if(type==MAIN_THREAD)
+    {
+        jniEnv->CallVoidMethod(instance,jmd_time,code,total,current);
+    }
 }

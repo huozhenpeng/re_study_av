@@ -3,10 +3,13 @@
 //
 #include "HAudio.h"
 
-HAudio::HAudio(HPlayStatus *hPlayStatus) {
+HAudio::HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava) {
     this->playStatus=hPlayStatus;
     this->hQueue=new HQueue(hPlayStatus);
+    this->callBackJava=callBackJava;
+    this->sample_rate=44100;
     buffer= (uint8_t *)(av_malloc(44100 * 2 * 2));
+
 }
 
 HAudio::~HAudio() {
@@ -110,6 +113,17 @@ int resampleAudio(HAudio *hAudio) {
 
         AVFrame *avFrame=av_frame_alloc();
         ret=avcodec_receive_frame(hAudio->avCodecContext,avFrame);
+
+        //当前AVFrame中存放的时间(比如说该Frame出现在2分钟的时候，那么它的值就是2分钟)
+        double  now_time=avFrame->pts*av_q2d(hAudio->time_base);
+        //clock表示的是从开始播放到现在已经播放的时长
+        //时间校准
+        if(now_time<hAudio->clock)
+        {
+           now_time=hAudio->clock;
+        }
+        hAudio->clock=now_time;
+
         if(ret==0)
         {
 
@@ -250,6 +264,20 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
         int bufferSize = resampleAudio(hAudio);
         if(bufferSize > 0)
         {
+            //不强制转换，会有异常，其实java层定义为int类型即可
+            hAudio->clock+=bufferSize/((double)(hAudio->sample_rate*2*2));
+            //我们0.1s回调一次
+            if(hAudio->clock-hAudio->last_time>0.1)
+            {
+                hAudio->last_time=hAudio->clock;
+                if(hAudio->LOG_DEBUG)
+                {
+                    LOGI("时间回调");
+                }
+                hAudio->callBackJava->onShowTime(CHILD_THREAD,200,hAudio->duration,hAudio->clock);
+
+            }
+
             (* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
         }
     }
@@ -343,6 +371,19 @@ void HAudio::resume() {
             LOGI("pcmPlayerPlay 为空");
         }
     }
+}
+
+void HAudio::stop() {
+    if(pcmPlayerPlay!=NULL)
+    {
+        (*pcmPlayerPlay)->SetPlayState(pcmPlayerPlay,SL_PLAYSTATE_STOPPED);
+    } else{
+        if(LOG_DEBUG)
+        {
+            LOGI("pcmPlayerPlay 为空");
+        }
+    }
+
 }
 
 

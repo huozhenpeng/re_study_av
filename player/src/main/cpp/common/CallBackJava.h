@@ -20,6 +20,7 @@ public:
     JNIEnv *jniEnv=NULL;
     jobject instance=NULL;
     jmethodID jmd=NULL;
+    jmethodID  jmd_time=NULL;
 
 public:
     CallBackJava(JavaVM *vm,JNIEnv *env,jobject job);
@@ -33,6 +34,8 @@ public:
      * @param msg
      */
     void onCallBack(int type,int code, const char *msg);
+
+    void onShowTime(int type,int code, int total,int current);
 
 
 };

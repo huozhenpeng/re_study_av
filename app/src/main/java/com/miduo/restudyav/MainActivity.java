@@ -88,6 +88,15 @@ public class MainActivity extends AppCompatActivity {
                 player.resume();
             }
         });
+
+        final Button stop=findViewById(R.id.stop);
+        stop.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                player.stop();
+            }
+        });
     }
 
     private static String[] PERMISSIONS_STORAGE = {
