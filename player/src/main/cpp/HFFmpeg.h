@@ -59,6 +59,16 @@ public:
        */
       void decode();
 
+      /**
+       * 暂停播放
+       */
+      void pause();
+
+      /**
+       * 恢复播放
+       */
+      void resume();
+
 
 
 };

@@ -70,3 +70,15 @@ JNIEXPORT void JNICALL
 Java_com_miduo_player_Player_start(JNIEnv *env, jobject thiz) {
     hFFmpeg->start();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_pause(JNIEnv *env, jobject thiz) {
+    hFFmpeg->pause();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_resume(JNIEnv *env, jobject thiz) {
+    hFFmpeg->resume();
+}

@@ -7,11 +7,15 @@
 #define RESTUDYAV_HAUDIO_H
 
 #include "HQueue.h"
+#include "head/log.h"
 
 extern "C"
 {
 #include "libavcodec/avcodec.h"
 #include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
+#include <SLES/OpenSLES.h>
+#include <SLES/OpenSLES_Android.h>
 };
 
 class HAudio {
@@ -29,11 +33,29 @@ public:
     uint8_t  *buffer=NULL;
 
     bool LOG_DEBUG=true;
-    int data_size=0;
+
+
+
+    int sample_rate;
+    SLObjectItf  engineObject;
+    SLEngineItf  engineEngine;
+    SLObjectItf outputMixObject;
+
+    SLEnvironmentalReverbItf  outputMixEnvironmentalReverb;
+    SLEnvironmentalReverbSettings reverbSettings;
+
+    SLObjectItf pcmPlayerObject;
+
+    SLPlayItf  pcmPlayerPlay;
+
+    SLAndroidSimpleBufferQueueItf pcmBufferQueue;
+
 
 public:
     HAudio(HPlayStatus *hPlayStatus);
     ~HAudio();
+
+    void initOpenSLES();
 
     //线程方法不能是成员方法，要不然报错
 //    void * product(void *data);
@@ -41,7 +63,9 @@ public:
 
     void start();
 
-    int resampleAudio(HAudio *hAudio);
+    void pause();
+
+    void resume();
 };
 
 

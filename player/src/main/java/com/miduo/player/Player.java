@@ -48,4 +48,8 @@ public class Player {
             start();
         }
     }
+
+    public native void pause();
+
+    public native void resume() ;
 }

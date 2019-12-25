@@ -35,7 +35,6 @@ add_library( # Sets the name of the library.
         src/main/cpp/HAudio.cpp
         src/main/cpp/HPlayStatus.cpp
         src/main/cpp/HQueue.cpp
-        src/main/cpp/HOpenslEs.cpp
         )
 
 

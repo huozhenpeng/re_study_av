@@ -147,6 +147,16 @@ void HFFmpeg::decode() {
     callBackJava->onCallBack(0,200,msg);
 }
 
+void HFFmpeg::pause() {
+    hAudio->pause();
+
+}
+
+void HFFmpeg::resume() {
+    hAudio->resume();
+
+}
+
 
 
 

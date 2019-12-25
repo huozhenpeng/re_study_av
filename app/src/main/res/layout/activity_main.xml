@@ -36,4 +36,34 @@
         app:layout_constraintTop_toBottomOf="@id/button"
         />
 
+    <Button
+        android:id="@+id/native_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="原生播放"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/decode"
+        />
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="暂停"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/native_play"
+        />
+
+    <Button
+        android:id="@+id/resume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恢复播放"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pause"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

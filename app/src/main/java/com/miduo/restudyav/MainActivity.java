@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.miduo.player.Player;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +52,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 player.prepare(Environment.getExternalStorageDirectory()+"/心雨.mp3");
+            }
+        });
+
+        final Button native_play=findViewById(R.id.native_play);
+        native_play.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                MediaPlayer mp = new MediaPlayer();
+                try {
+                    mp.setDataSource(Environment.getExternalStorageDirectory()+"/心雨.mp3");
+                    mp.prepare();
+                    mp.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        final Button pause=findViewById(R.id.pause);
+        pause.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                player.pause();
+            }
+        });
+
+        final Button resume=findViewById(R.id.resume);
+        resume.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                player.resume();
             }
         });
     }
