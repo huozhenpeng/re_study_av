@@ -111,5 +111,10 @@ public class Player {
 
     }
 
+    public void onCallValumeDB(int db)
+    {
+        Log.e(Tag,"db--->"+db);
+    }
+
 
 }

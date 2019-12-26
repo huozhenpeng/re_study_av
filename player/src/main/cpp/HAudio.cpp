@@ -322,6 +322,9 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
 
             }
 
+            hAudio->callBackJava->onCallValumeDB(CHILD_THREAD,
+                                                 hAudio->getPCMDB((char *)(hAudio->sampleBuffer), bufferSize * 4));
+
             //(* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
 
             (* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> sampleBuffer, totalBytes);
@@ -647,6 +650,23 @@ int HAudio::getSoundTouchData() {
         }
     }
     return 0;
+}
+
+int HAudio::getPCMDB(char *pcmcata, size_t pcmsize) {
+    int db = 0;
+    short int pervalue = 0;
+    double sum = 0;
+    for(int i = 0; i < pcmsize; i+= 2)
+    {
+        memcpy(&pervalue, pcmcata+i, 2);
+        sum += abs(pervalue);
+    }
+    sum = sum / (pcmsize / 2);
+    if(sum > 0)
+    {
+        db = (int)20.0 *log10(sum);
+    }
+    return db;
 }
 
 

@@ -124,6 +124,9 @@ public:
 
     int getSoundTouchData();
 
+    //获取分贝值
+    int getPCMDB(char *pcmcata, size_t pcmsize);
+
 
 };
 
