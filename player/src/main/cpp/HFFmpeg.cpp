@@ -242,6 +242,20 @@ void HFFmpeg::setLeftVolume() {
     }
 }
 
+void HFFmpeg::setSpeed(jfloat speed) {
+    if(hAudio!=NULL)
+    {
+        hAudio->setSpeed(speed);
+    }
+}
+
+void HFFmpeg::setPitch(jfloat pitch) {
+    if(hAudio!=NULL)
+    {
+        hAudio->setTonal(pitch);
+    }
+}
+
 
 
 

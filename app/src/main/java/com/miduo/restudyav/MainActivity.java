@@ -146,4 +146,14 @@ public class MainActivity extends AppCompatActivity {
     public void steroVoice(View view) {
         player.steroVoice();
     }
+
+
+    public void setPitch(View view) {
+        player.setPitch(1.5f);
+    }
+
+    public void setSpeed(View view) {
+        player.setSpeed(1.5f);
+
+    }
 }

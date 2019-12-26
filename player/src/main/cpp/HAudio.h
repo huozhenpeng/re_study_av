@@ -9,6 +9,8 @@
 #include "HQueue.h"
 #include "head/log.h"
 #include "common/CallBackJava.h"
+#include "SoundTouch.h"
+using namespace soundtouch;
 
 extern "C"
 {
@@ -69,6 +71,17 @@ public:
     //当前音量
     int volumePercent;
 
+    //SoundTouch
+    SoundTouch *soundTouch = NULL;
+    SAMPLETYPE *sampleBuffer = NULL;
+    bool finished = true;
+    uint8_t *out_buffer = NULL;
+    int nb = 0;
+    int num = 0;
+
+    float pitch = 1.0f;
+    float speed = 1.0f;
+
 public:
     HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava);
     ~HAudio();
@@ -102,6 +115,14 @@ public:
 
     //左声道
     void setLeftVolume();
+
+    //设置音速
+    void setSpeed(jfloat speed);
+
+    //设置音调
+    void setTonal(jfloat tonal);
+
+    int getSoundTouchData();
 
 
 };

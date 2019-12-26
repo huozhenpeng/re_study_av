@@ -101,6 +101,10 @@ public:
         //左声道
         void setLeftVolume();
 
+        void setPitch(jfloat pitch);
+
+        void setSpeed(jfloat speed);
+
 
 
 };

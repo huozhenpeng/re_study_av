@@ -139,3 +139,16 @@ Java_com_miduo_player_Player_steroVoice(JNIEnv *env, jobject thiz) {
 
     hFFmpeg->setStereoVolume();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_setNativePitch(JNIEnv *env, jobject thiz, jfloat pitch) {
+    hFFmpeg->setPitch(pitch);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_setNativeSpeed(JNIEnv *env, jobject thiz, jfloat speed) {
+    hFFmpeg->setSpeed(speed);
+}

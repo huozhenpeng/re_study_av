@@ -19,6 +19,10 @@ endif()
 #导入include路径
 include_directories(src/main/cpp/include/ffmpeg)
 
+include_directories(src/main/cpp/include/soundtouch/include)
+
+include_directories(src/main/cpp/include/soundtouch/source)
+
 
 
 add_library( # Sets the name of the library.
@@ -35,6 +39,21 @@ add_library( # Sets the name of the library.
         src/main/cpp/HAudio.cpp
         src/main/cpp/HPlayStatus.cpp
         src/main/cpp/HQueue.cpp
+
+
+        #sounchtouch
+        src/main/cpp/include/soundtouch/source/AAFilter.cpp
+        src/main/cpp/include/soundtouch/source/FIFOSampleBuffer.cpp
+        src/main/cpp/include/soundtouch/source/FIRFilter.cpp
+        src/main/cpp/include/soundtouch/source/cpu_detect_x86.cpp
+        src/main/cpp/include/soundtouch/source/sse_optimized.cpp
+        src/main/cpp/include/soundtouch/source/RateTransposer.cpp
+        src/main/cpp/include/soundtouch/source/SoundTouch.cpp
+        src/main/cpp/include/soundtouch/source/InterpolateCubic.cpp
+        src/main/cpp/include/soundtouch/source/InterpolateLinear.cpp
+        src/main/cpp/include/soundtouch/source/InterpolateShannon.cpp
+        src/main/cpp/include/soundtouch/source/TDStretch.cpp
+        src/main/cpp/include/soundtouch/source/PeakFinder.cpp
         )
 
 

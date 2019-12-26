@@ -11,6 +11,16 @@ HAudio::HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava) {
     this->sample_rate=44100;
     buffer= (uint8_t *)(av_malloc(44100 * 2 * 2));
 
+
+    //SoundTouch
+    sampleBuffer= (SAMPLETYPE *) av_malloc(sample_rate * 2 * 2);
+    soundTouch=new SoundTouch();
+    soundTouch->setSampleRate(sample_rate);
+    soundTouch->setChannels(2);
+
+    soundTouch->setPitch(pitch);
+    soundTouch->setTempo(speed);
+
 }
 
 HAudio::~HAudio() {
@@ -103,7 +113,7 @@ void HAudio::start() {
 }
 
 int data_size=0;
-int resampleAudio(HAudio *hAudio) {
+int resampleAudio(HAudio *hAudio,void **pcmbuf) {
     if(hAudio->LOG_DEBUG)
     {
         LOGI("开始写入pcm数据");
@@ -190,7 +200,7 @@ int resampleAudio(HAudio *hAudio) {
             }
 
             //有疑问，需要试验
-            int nb=swr_convert(
+            hAudio->nb=swr_convert(
                     swrContext,
                     &hAudio->buffer,
                     avFrame->nb_samples,
@@ -200,7 +210,8 @@ int resampleAudio(HAudio *hAudio) {
 
             int out_channels=av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
 
-            data_size=nb*out_channels*av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+            //每个通道输出的样本数*通道数*每个样本占用的字节,感觉加上了SoundTouch后不好理解，换种写法，跟不加之前统一，主要是Enqueue这儿的代码统一
+            data_size=hAudio->nb*out_channels*av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
 
             //fwrite(hAudio->buffer,1,data_size,outFile);
 
@@ -208,6 +219,7 @@ int resampleAudio(HAudio *hAudio) {
             {
                 LOGI("data_size is %d",data_size);
             }
+            *pcmbuf=hAudio->buffer;
 
             av_packet_free(&avPacket);
             av_free(avPacket);
@@ -289,9 +301,13 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
     HAudio *hAudio = (HAudio *) context;
     if(hAudio != NULL)
     {
-        int bufferSize = resampleAudio(hAudio);
+        //int bufferSize = resampleAudio(hAudio);
+        int bufferSize=hAudio->getSoundTouchData();
         if(bufferSize > 0)
         {
+            int out_channels=av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
+            int totalBytes=bufferSize*out_channels*av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+
             //不强制转换，会有异常，其实java层定义为int类型即可
             hAudio->clock+=bufferSize/((double)(hAudio->sample_rate*2*2));
             //我们0.1s回调一次
@@ -306,7 +322,9 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
 
             }
 
-            (* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
+            //(* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
+
+            (* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> sampleBuffer, totalBytes);
         }
     }
 }
@@ -573,6 +591,62 @@ void HAudio::setLeftVolume() {
             1,  //0右声道1左声道
             true //声道是否开启
     );
+}
+
+void HAudio::setSpeed(jfloat speed) {
+    this->speed=speed;
+    if(soundTouch!=NULL)
+    {
+        soundTouch->setTempo(speed);
+    }
+}
+
+void HAudio::setTonal(jfloat tonal) {
+    this->pitch=tonal;
+    if(soundTouch!=NULL)
+    {
+        soundTouch->setPitch(tonal);
+    }
+}
+
+int HAudio::getSoundTouchData() {
+    while(playStatus != NULL && !playStatus->exit)
+    {
+        out_buffer = NULL;
+        if(finished)
+        {
+            finished = false;
+            data_size = resampleAudio(this,(void **) &out_buffer);
+            if(data_size > 0)
+            {
+                for(int i = 0; i < data_size / 2 + 1; i++)
+                {
+                    sampleBuffer[i] = (out_buffer[i * 2] | ((out_buffer[i * 2 + 1]) << 8));
+                }
+                soundTouch->putSamples(sampleBuffer, nb);
+                num = soundTouch->receiveSamples(sampleBuffer, nb);
+            } else{
+                soundTouch->flush();
+            }
+        }
+        if(num == 0)
+        {
+            finished = true;
+            continue;
+        } else{
+            if(out_buffer == NULL)
+            {
+                num = soundTouch->receiveSamples(sampleBuffer, nb);
+                if(num == 0)
+                {
+                    finished = true;
+                    continue;
+                }
+            }
+            return num;
+        }
+    }
+    return 0;
 }
 
 

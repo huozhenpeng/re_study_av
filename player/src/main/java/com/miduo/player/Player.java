@@ -98,4 +98,18 @@ public class Player {
     public native void rightVoice();
 
     public native void steroVoice();
+
+    private native void setNativePitch(float pitch);
+    private native void setNativeSpeed(float speed);
+
+    public void setPitch(float v) {
+        setNativePitch(v);
+    }
+
+    public void setSpeed(float v) {
+        setNativeSpeed(v);
+
+    }
+
+
 }
