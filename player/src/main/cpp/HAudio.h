@@ -53,6 +53,9 @@ public:
     //音量控制
     SLVolumeItf  pcmVolumePlay;
 
+    //控制声道
+    SLMuteSoloItf  pcmPlayPlayerMuteSolo;
+
     SLAndroidSimpleBufferQueueItf pcmBufferQueue;
 
 
@@ -90,6 +93,16 @@ public:
 
     //音量控制
     void setVolume(int percent);
+
+    //立体声
+    void setStereoVolume();
+
+    //右声道
+    void setRightVolume();
+
+    //左声道
+    void setLeftVolume();
+
 
 };
 

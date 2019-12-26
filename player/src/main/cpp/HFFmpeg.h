@@ -92,6 +92,15 @@ public:
        */
       void setVolume(int percent);
 
+        //立体声
+        void setStereoVolume();
+
+        //右声道
+        void setRightVolume();
+
+        //左声道
+        void setLeftVolume();
+
 
 
 };

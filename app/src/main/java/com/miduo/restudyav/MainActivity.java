@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
+    Player player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
-        final Player player=new Player();
+        player=new Player();
         tv.setText(player.stringFromJNI());
         //player.printCodec();
 
@@ -133,5 +133,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return 44100;
         }
+    }
+
+    public void leftVoice(View view) {
+        player.setleftVoice();
+    }
+
+    public void rightVoice(View view) {
+        player.rightVoice();
+    }
+
+    public void steroVoice(View view) {
+        player.steroVoice();
     }
 }

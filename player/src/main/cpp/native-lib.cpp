@@ -119,3 +119,23 @@ Java_com_miduo_player_Player_setNativeVolume(JNIEnv *env, jobject thiz, jint per
 
     hFFmpeg->setVolume(percent);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_setleftVoice(JNIEnv *env, jobject thiz) {
+
+    hFFmpeg->setLeftVolume();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_rightVoice(JNIEnv *env, jobject thiz) {
+    hFFmpeg->setRightVolume();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_steroVoice(JNIEnv *env, jobject thiz) {
+
+    hFFmpeg->setStereoVolume();
+}

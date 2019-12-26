@@ -221,6 +221,27 @@ void HFFmpeg::setVolume(int percent) {
     }
 }
 
+void HFFmpeg::setStereoVolume() {
+    if(hAudio!=NULL)
+    {
+        hAudio->setStereoVolume();
+    }
+}
+
+void HFFmpeg::setRightVolume() {
+    if(hAudio!=NULL)
+    {
+        hAudio->setRightVolume();
+    }
+}
+
+void HFFmpeg::setLeftVolume() {
+    if(hAudio!=NULL)
+    {
+        hAudio->setLeftVolume();
+    }
+}
+
 
 
 

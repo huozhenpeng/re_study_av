@@ -92,4 +92,10 @@ public class Player {
     public native void resume() ;
 
     public native void stop();
+
+    public native void setleftVoice();
+
+    public native void rightVoice();
+
+    public native void steroVoice();
 }

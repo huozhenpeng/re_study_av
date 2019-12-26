@@ -353,17 +353,22 @@ void HAudio::initOpenSLES() {
 
 
     //第二个参数是管音量的，如果没有控制音量的需求，可以不写
-    const SLInterfaceID ids[2] = {SL_IID_BUFFERQUEUE,SL_IID_VOLUME};
-    const SLboolean req[2] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
+    //第三个参数是控制声道的
+    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE,SL_IID_VOLUME,SL_IID_MUTESOLO};
+    const SLboolean req[3] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
 
-    (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk, 2, ids, req);
+    (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk, 3, ids, req);
     //初始化播放器
     (*pcmPlayerObject)->Realize(pcmPlayerObject, SL_BOOLEAN_FALSE);
 
 //    得到接口后调用  获取Player接口
     (*pcmPlayerObject)->GetInterface(pcmPlayerObject, SL_IID_PLAY, &pcmPlayerPlay);
 
+    //控制音量
     (*pcmPlayerObject)->GetInterface(pcmPlayerObject,SL_IID_VOLUME,&pcmVolumePlay);
+
+    //控制声道
+    (*pcmPlayerObject)->GetInterface(pcmPlayerObject,SL_IID_MUTESOLO,&pcmPlayPlayerMuteSolo);
 
 //    注册回调缓冲区 获取缓冲队列接口
     (*pcmPlayerObject)->GetInterface(pcmPlayerObject, SL_IID_BUFFERQUEUE, &pcmBufferQueue);
@@ -529,6 +534,45 @@ void HAudio::setVolume(int percent) {
         }
     }
 
+}
+
+void HAudio::setStereoVolume() {
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            1,  //0右声道1左声道
+            false //声道是否开启
+    );
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            0,  //0右声道1左声道
+            false //声道是否开启
+    );
+}
+
+void HAudio::setRightVolume() {
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            1,  //0右声道1左声道
+            false //声道是否开启
+    );
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            0,  //0右声道1左声道
+            true //声道是否开启
+    );
+}
+
+void HAudio::setLeftVolume() {
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            0,  //0右声道1左声道
+            false //声道是否开启
+    );
+    (*pcmPlayPlayerMuteSolo)->SetChannelMute(
+            pcmPlayPlayerMuteSolo,
+            1,  //0右声道1左声道
+            true //声道是否开启
+    );
 }
 
 
