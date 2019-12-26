@@ -206,8 +206,19 @@ void HFFmpeg::release() {
 
 void HFFmpeg::seek(int second) {
 
-    hAudio->seek(second);
+    if(hAudio!=NULL)
+    {
+        hAudio->seek(second);
+    }
 
+
+}
+
+void HFFmpeg::setVolume(int percent) {
+    if(hAudio!=NULL)
+    {
+        hAudio->setVolume(percent);
+    }
 }
 
 

@@ -46,6 +46,11 @@ public class Player {
                 //Log.e(Tag,"解码器已经准备好了，开始解码了");
             }
             start();
+            if(currentVolume!=0)
+            {
+                //初始化音量大小
+                setNativeVolume(currentVolume);
+            }
         }
     }
 
@@ -60,6 +65,23 @@ public class Player {
         Log.e(Tag,msg);
         stop();
     }
+
+    /**
+     * 记录当前音量
+     */
+    private int currentVolume;
+    /**
+     * 设置音量
+     * @param second
+     */
+    public void setVolume(int second)
+    {
+        //初次设置可能会不成功的，所以在start之后的时候再次设置
+        currentVolume=second;
+        setNativeVolume(currentVolume);
+    }
+
+    public native void setNativeVolume(int second);
 
     public native void seek(int second);
 

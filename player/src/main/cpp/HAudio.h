@@ -50,6 +50,8 @@ public:
     SLObjectItf pcmPlayerObject;
 
     SLPlayItf  pcmPlayerPlay;
+    //音量控制
+    SLVolumeItf  pcmVolumePlay;
 
     SLAndroidSimpleBufferQueueItf pcmBufferQueue;
 
@@ -60,6 +62,9 @@ public:
     double  last_time=0;
 
     CallBackJava *callBackJava;
+
+    //当前音量
+    int volumePercent;
 
 public:
     HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava);
@@ -82,6 +87,9 @@ public:
     void release();
 
     void seek(int second);
+
+    //音量控制
+    void setVolume(int percent);
 
 };
 

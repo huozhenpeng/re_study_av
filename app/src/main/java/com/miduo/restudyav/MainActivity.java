@@ -106,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
                 player.seek(270);
             }
         });
+
+        final Button volume=findViewById(R.id.volume);
+        volume.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                player.setVolume(50);
+            }
+        });
     }
 
     private static String[] PERMISSIONS_STORAGE = {

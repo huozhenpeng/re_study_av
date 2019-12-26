@@ -86,6 +86,12 @@ public:
        */
       void seek(int second);
 
+      /**
+       * 设置音量
+       * @param percent
+       */
+      void setVolume(int percent);
+
 
 
 };

@@ -112,3 +112,10 @@ JNIEXPORT void JNICALL
 Java_com_miduo_player_Player_seek(JNIEnv *env, jobject thiz, jint second) {
     hFFmpeg->seek(second);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_setNativeVolume(JNIEnv *env, jobject thiz, jint percent) {
+
+    hFFmpeg->setVolume(percent);
+}
