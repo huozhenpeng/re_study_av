@@ -1,27 +1,29 @@
 package com.miduo.restudyav;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.miduo.player.Player;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Player player;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
             }
         }
-        // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
-        player=new Player();
-        tv.setText(player.stringFromJNI());
-        //player.printCodec();
+
+        intent=new Intent(MainActivity.this,PlayerService.class);
+        startService(intent);
+        bindService(intent,serviceConnection,BIND_WAIVE_PRIORITY);
+
 
         final Button  button=findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.prepare(Environment.getExternalStorageDirectory()+"/心雨.mp3");
+
+                try {
+                    player.play(Environment.getExternalStorageDirectory()+"/心雨.mp3");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -76,7 +84,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.pause();
+                try {
+                    player.pause();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -85,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.resume();
+                try {
+                    player.resume();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -94,7 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.stop();
+                try {
+                    player.stop();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -103,7 +123,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.seek(270);
+                try {
+                    player.seek(270);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -112,7 +136,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                player.setVolume(50);
+                try {
+                    player.setVolume(50);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -136,24 +164,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void leftVoice(View view) {
-        player.setleftVoice();
+        try {
+            player.leftVoice();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void rightVoice(View view) {
-        player.rightVoice();
+        try {
+            player.rightVoice();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void steroVoice(View view) {
-        player.steroVoice();
+        try {
+            player.steroVoice();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
 
     public void setPitch(View view) {
-        player.setPitch(1.5f);
+        try {
+            player.setPitch(1.5f);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setSpeed(View view) {
-        player.setSpeed(1.5f);
+        try {
+            player.setSpeed(1.5f);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    private IPlayInterface player;
+    private ServiceConnection serviceConnection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            player=IPlayInterface.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
 }
