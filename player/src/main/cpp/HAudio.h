@@ -82,6 +82,9 @@ public:
     float pitch = 1.0f;
     float speed = 1.0f;
 
+    //记录是否录制
+    jboolean  isRecordPcm= false;
+
 public:
     HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava);
     ~HAudio();
@@ -126,6 +129,8 @@ public:
 
     //获取分贝值
     int getPCMDB(char *pcmcata, size_t pcmsize);
+
+    void startRecord(jboolean record);
 
 
 };

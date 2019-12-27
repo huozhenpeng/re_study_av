@@ -126,12 +126,13 @@
                 android:onClick="reverse"
                 />
             <TextView
+                android:id="@+id/tv_cut"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
-                android:text="裁剪"
+                android:text="开始裁剪"
                 android:background="@drawable/oval"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"

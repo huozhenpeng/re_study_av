@@ -43,6 +43,8 @@ public class ReleaseMainActivity extends AppCompatActivity {
 
     DbLineView lineview;
 
+    TextView tv_cut;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class ReleaseMainActivity extends AppCompatActivity {
         tv_start=findViewById(R.id.tv_start);
         tv_end=findViewById(R.id.tv_end);
 
+        tv_cut=findViewById(R.id.tv_cut);
         intent=new Intent(ReleaseMainActivity.this,PlayerService.class);
         startService(intent);
         bindService(intent,serviceConnection,BIND_WAIVE_PRIORITY);
@@ -220,8 +223,22 @@ public class ReleaseMainActivity extends AppCompatActivity {
     }
 
 
-    public void special(View view) {
+    boolean isCut=false;
+    public void special(View view) throws RemoteException {
 
+        if(isCut)
+        {
+            isCut=false;
+            tv_cut.setText("开始裁剪");
+            player.startRecord(Environment.getExternalStorageDirectory().getPath()+"/xinyu.aac",false);
+        }
+        else
+        {
+            isCut=true;
+            tv_cut.setText("结束裁剪");
+            player.startRecord(Environment.getExternalStorageDirectory().getPath()+"/xinyu.aac",true);
+
+        }
     }
 
 

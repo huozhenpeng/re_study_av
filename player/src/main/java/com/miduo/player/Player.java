@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import com.miduo.player.listener.DbCallBackListener;
 
+import java.io.File;
+
 public class Player {
     static {
         System.loadLibrary("native-lib");
@@ -105,6 +107,10 @@ public class Player {
 
     public native void steroVoice();
 
+    private native int n_samplerate();
+
+    private native void startNativeRecord(boolean record);
+
     private native void setNativePitch(float pitch);
     private native void setNativeSpeed(float speed);
 
@@ -131,6 +137,36 @@ public class Player {
     public void setDbCallBackListener(DbCallBackListener dbCallBackListener)
     {
         this.dbCallBackListener=dbCallBackListener;
+    }
+
+    MediaCodecRecord mediaCodecRecord;
+    public void startRecord(String outfile,boolean record)
+    {
+        Log.e("abc","startRecord");
+        if(mediaCodecRecord==null)
+        {
+            File outFile=new File(outfile);
+            if(n_samplerate() > 0)
+            {
+                mediaCodecRecord=new MediaCodecRecord();
+                mediaCodecRecord.initMediaCodec(n_samplerate(), outFile);
+                startNativeRecord(record);
+            }
+            else
+            {
+                startNativeRecord(record);
+            }
+        }
+
+    }
+
+
+    private void encodecPcmToAAc(int size, byte[] buffer)
+    {
+        if(mediaCodecRecord!=null)
+        {
+            mediaCodecRecord.encodePcm2AAC(size,buffer);
+        }
     }
 
 

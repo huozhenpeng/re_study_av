@@ -16,6 +16,7 @@ CallBackJava::CallBackJava(JavaVM *vm, JNIEnv *env, jobject job) {
     jmd_complete=env->GetMethodID(jcl,"onPlayComplete","(ILjava/lang/String;)V");
     jmd_time=env->GetMethodID(jcl,"onShowTime","(III)V");
     jmid_valumedb = env->GetMethodID(jcl, "onCallValumeDB", "(II)V");
+    jmid_pcmtoaac = env->GetMethodID(jcl, "encodecPcmToAAc", "(I[B)V");
 }
 
 void CallBackJava::onCallBack(int type, int code, const char *msg) {
@@ -92,6 +93,29 @@ void CallBackJava::onCallValumeDB(int type, int db,int currentTime) {
         javaVm->AttachCurrentThread(&jniEnv,0);
         //构造返回给java的字符串
         jniEnv->CallVoidMethod(instance,jmid_valumedb,db,currentTime);
+        javaVm->DetachCurrentThread();
+    }
+}
+
+void CallBackJava::onCallPcmToAAC(int type, int size, void *buffer) {
+    if(type==MAIN_THREAD)
+    {
+        jbyteArray jbuffer=jniEnv->NewByteArray(size);
+        jniEnv->SetByteArrayRegion(jbuffer, 0, size, static_cast<const jbyte *>(buffer));
+        jniEnv->CallVoidMethod(instance,jmid_pcmtoaac,size,jbuffer);
+        jniEnv->DeleteLocalRef(jbuffer);
+
+    } else if(type==CHILD_THREAD)
+    {
+        //重新给jniEnv赋值
+        javaVm->AttachCurrentThread(&jniEnv,0);
+
+        jbyteArray jbuffer=jniEnv->NewByteArray(size);
+        jniEnv->SetByteArrayRegion(jbuffer, 0, size, static_cast<const jbyte *>(buffer));
+        jniEnv->CallVoidMethod(instance,jmid_pcmtoaac,size,jbuffer);
+        jniEnv->DeleteLocalRef(jbuffer);
+
+
         javaVm->DetachCurrentThread();
     }
 }

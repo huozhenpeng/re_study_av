@@ -152,3 +152,24 @@ JNIEXPORT void JNICALL
 Java_com_miduo_player_Player_setNativeSpeed(JNIEnv *env, jobject thiz, jfloat speed) {
     hFFmpeg->setSpeed(speed);
 }
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_miduo_player_Player_n_1samplerate(JNIEnv *env, jobject thiz) {
+    if(hFFmpeg!=NULL)
+    {
+        return hFFmpeg->getSampleRate();
+    }
+    return 0;
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_miduo_player_Player_startNativeRecord(JNIEnv *env, jobject thiz, jboolean record) {
+
+    if(hFFmpeg!=NULL)
+    {
+        hFFmpeg->startRecord(record);
+    }
+}

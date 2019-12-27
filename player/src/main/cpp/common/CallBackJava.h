@@ -23,6 +23,7 @@ public:
     jmethodID  jmd_time=NULL;
     jmethodID  jmd_complete=NULL;
     jmethodID jmid_valumedb=NULL;
+    jmethodID  jmid_pcmtoaac=NULL;
 
 public:
     CallBackJava(JavaVM *vm,JNIEnv *env,jobject job);
@@ -42,6 +43,8 @@ public:
     void onPlayComplete(int type,int code,const char *msg);
 
     void onCallValumeDB(int type, int db,int currentTime);
+
+    void onCallPcmToAAC(int type,int size,void *buffer);
 
 
 };

@@ -256,6 +256,23 @@ void HFFmpeg::setPitch(jfloat pitch) {
     }
 }
 
+int HFFmpeg::getSampleRate() {
+
+    if(hAudio!=NULL)
+    {
+        return hAudio->avCodecContext->sample_rate;
+    }
+    return 0;
+}
+
+void HFFmpeg::startRecord(jboolean record) {
+
+    if(hAudio!=NULL)
+    {
+        hAudio->startRecord(record);
+    }
+}
+
 
 
 

@@ -105,6 +105,10 @@ public:
 
         void setSpeed(jfloat speed);
 
+        int getSampleRate();
+
+        void startRecord(jboolean record);
+
 
 
 };

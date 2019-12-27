@@ -39,6 +39,8 @@ interface IPlayInterface {
 
     void unregisterListener(ICallBackInterface listener);
 
+    void startRecord(String path,boolean record);
+
 
 
 

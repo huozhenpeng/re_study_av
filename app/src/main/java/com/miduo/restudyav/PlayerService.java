@@ -142,6 +142,11 @@ public class PlayerService extends Service {
         public void unregisterListener(ICallBackInterface listener) throws RemoteException {
 
         }
+
+        @Override
+        public void startRecord(String path, boolean record) throws RemoteException {
+            player.startRecord(path,record);
+        }
     };
 
     private RemoteCallbackList<ICallBackInterface> listeners=new RemoteCallbackList<>();

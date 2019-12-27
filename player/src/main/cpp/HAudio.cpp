@@ -325,6 +325,11 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
 
             }
 
+            if(hAudio->isRecordPcm)
+            {
+                hAudio->callBackJava->onCallPcmToAAC(CHILD_THREAD,bufferSize*2*2,hAudio->sampleBuffer);
+            }
+
 
 
             //(* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
@@ -669,6 +674,11 @@ int HAudio::getPCMDB(char *pcmcata, size_t pcmsize) {
         db = (int)20.0 *log10(sum);
     }
     return db;
+}
+
+void HAudio::startRecord(jboolean record) {
+
+    this->isRecordPcm=record;
 }
 
 
