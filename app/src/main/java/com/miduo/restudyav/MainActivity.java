@@ -11,19 +11,26 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.miduo.restudyav.Widget.DbLineView;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     Intent intent;
+    DbLineView lineview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         intent=new Intent(MainActivity.this,PlayerService.class);
         startService(intent);
         bindService(intent,serviceConnection,BIND_WAIVE_PRIORITY);
+
+        lineview=findViewById(R.id.lineview);
+
 
 
         final Button  button=findViewById(R.id.button);
@@ -210,10 +220,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private IPlayInterface player;
+    private ICallBackInterface callBackInterface=new ICallBackInterface.Stub() {
+
+        @Override
+        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
+
+        }
+
+        @Override
+        public void dbCallBack(int db, int currentTime) throws RemoteException {
+
+            Message message=Message.obtain();
+            message.what=0x01;
+            message.arg1=db;
+            message.arg2=currentTime;
+            handler.sendMessage(message);
+        }
+
+        @Override
+        public void totalTimeCallBack(int totalTime) throws RemoteException {
+            Message message=Message.obtain();
+            message.what=0x02;
+            message.arg1=totalTime;
+            handler.sendMessage(message);
+        }
+
+    };
+    private Handler handler=new Handler(){
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+                case 0x01:
+                    lineview.setCurrentDb(msg.arg2,msg.arg1);
+                    break;
+                case 0x02:
+                    lineview.setTotalTime(msg.arg1);
+                    break;
+            }
+        }
+    };
+
     private ServiceConnection serviceConnection=new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             player=IPlayInterface.Stub.asInterface(service);
+            try {
+                player.registerListener(callBackInterface);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

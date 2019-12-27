@@ -41,7 +41,7 @@ public:
 
     void onPlayComplete(int type,int code,const char *msg);
 
-    void onCallValumeDB(int type, int db);
+    void onCallValumeDB(int type, int db,int currentTime);
 
 
 };

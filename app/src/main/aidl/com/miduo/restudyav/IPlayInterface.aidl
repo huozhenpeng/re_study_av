@@ -1,6 +1,7 @@
 // IPlayInterface.aidl
 package com.miduo.restudyav;
 
+import com.miduo.restudyav.ICallBackInterface;
 
 interface IPlayInterface {
     /**
@@ -33,6 +34,10 @@ interface IPlayInterface {
     void setSpeed(float speed);
 
     void setVolume(int voice);
+
+    void registerListener(ICallBackInterface listener);
+
+    void unregisterListener(ICallBackInterface listener);
 
 
 

@@ -320,10 +320,12 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void * context)
                 }
                 hAudio->callBackJava->onShowTime(CHILD_THREAD,200,hAudio->duration,hAudio->clock);
 
+                hAudio->callBackJava->onCallValumeDB(CHILD_THREAD,
+                                                     hAudio->getPCMDB((char *)(hAudio->sampleBuffer), bufferSize * 4),hAudio->clock);
+
             }
 
-            hAudio->callBackJava->onCallValumeDB(CHILD_THREAD,
-                                                 hAudio->getPCMDB((char *)(hAudio->sampleBuffer), bufferSize * 4));
+
 
             //(* hAudio-> pcmBufferQueue)->Enqueue( hAudio->pcmBufferQueue, (char *) hAudio-> buffer, bufferSize);
 

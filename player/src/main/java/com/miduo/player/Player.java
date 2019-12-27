@@ -3,6 +3,8 @@ package com.miduo.player;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.miduo.player.listener.DbCallBackListener;
+
 public class Player {
     static {
         System.loadLibrary("native-lib");
@@ -57,6 +59,10 @@ public class Player {
     public void onShowTime(int code,int total,int current)
     {
         Log.e(Tag,"total==>"+total+"current===>"+current);
+        if(dbCallBackListener!=null)
+        {
+            dbCallBackListener.totalTimeCallBack(total);
+        }
 
     }
 
@@ -111,9 +117,20 @@ public class Player {
 
     }
 
-    public void onCallValumeDB(int db)
+    public void onCallValumeDB(int db,int currentTime)
     {
-        Log.e(Tag,"db--->"+db);
+        //Log.e(Tag,"db--->"+db);
+        if(dbCallBackListener!=null)
+        {
+            dbCallBackListener.dbCallBack(db,currentTime);
+        }
+    }
+
+    private DbCallBackListener dbCallBackListener;
+
+    public void setDbCallBackListener(DbCallBackListener dbCallBackListener)
+    {
+        this.dbCallBackListener=dbCallBackListener;
     }
 
 

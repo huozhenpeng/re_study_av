@@ -5,24 +5,57 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.miduo.player.Player;
+import com.miduo.player.listener.DbCallBackListener;
 
 public class PlayerService extends Service {
     Player player=new Player();
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
         return playBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //player.prepare(Environment.getExternalStorageDirectory()+"/心雨.mp3");
+        player.setDbCallBackListener(new DbCallBackListener() {
+            @Override
+            public void dbCallBack(int db, int currentTime) {
+                final int size= listeners.beginBroadcast();
+                for (int i=0;i<size;i++)
+                {
+                    try {
+                        listeners.getBroadcastItem(i).dbCallBack(db,currentTime);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                listeners.finishBroadcast();
+            }
+
+            @Override
+            public void totalTimeCallBack(int totalTime) {
+                final int size= listeners.beginBroadcast();
+                for (int i=0;i<size;i++)
+                {
+                    try {
+                        listeners.getBroadcastItem(i).totalTimeCallBack(totalTime);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                listeners.finishBroadcast();
+            }
+
+        });
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -99,6 +132,17 @@ public class PlayerService extends Service {
         public void setVolume(int voice) throws RemoteException {
             player.setVolume(voice);
         }
+
+        @Override
+        public void registerListener(ICallBackInterface listener) throws RemoteException {
+            listeners.register(listener);
+        }
+
+        @Override
+        public void unregisterListener(ICallBackInterface listener) throws RemoteException {
+
+        }
     };
 
+    private RemoteCallbackList<ICallBackInterface> listeners=new RemoteCallbackList<>();
 }
