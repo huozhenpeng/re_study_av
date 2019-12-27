@@ -15,15 +15,19 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.core.app.ActivityCompat;
+
+import com.miduo.restudyav.Widget.DbLineView;
 
 
 public class ReleaseMainActivity extends AppCompatActivity {
@@ -33,6 +37,12 @@ public class ReleaseMainActivity extends AppCompatActivity {
     ImageView iv_play;
     boolean isSeek=false;
     int position=0;
+
+    TextView tv_start;
+    TextView tv_end;
+
+    DbLineView lineview;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +53,13 @@ public class ReleaseMainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
             }
         }
+        lineview=findViewById(R.id.lineview);
 
         progress_seek=findViewById(R.id.progress_seek);
         iv_play=findViewById(R.id.iv_play);
+
+        tv_start=findViewById(R.id.tv_start);
+        tv_end=findViewById(R.id.tv_end);
 
         intent=new Intent(ReleaseMainActivity.this,PlayerService.class);
         startService(intent);
@@ -135,6 +149,7 @@ public class ReleaseMainActivity extends AppCompatActivity {
         }
 
     };
+
     private Handler handler=new Handler(){
 
         @Override
@@ -144,9 +159,12 @@ public class ReleaseMainActivity extends AppCompatActivity {
             {
                 case 0x01:
                     progress_seek.setProgress(msg.arg2*100/time);
+                    tv_start.setText(Utils.secToTime(msg.arg2));
+                    lineview.setCurrentDb(msg.arg2,msg.arg1);
                     break;
                 case 0x02:
-
+                    tv_end.setText(Utils.secToTime(msg.arg1));
+                    lineview.setTotalTime(msg.arg1);
                     break;
             }
         }
@@ -199,5 +217,37 @@ public class ReleaseMainActivity extends AppCompatActivity {
             iv_play.setImageResource(R.mipmap.play);
             player.play(Environment.getExternalStorageDirectory()+"/心雨.mp3");
         }
+    }
+
+
+    public void special(View view) {
+
+    }
+
+
+    public void leftVoice(View view) throws RemoteException {
+        player.leftVoice();
+    }
+
+    public void rightVoice(View view) throws RemoteException {
+        player.rightVoice();
+    }
+
+    public void reverse(View view) throws RemoteException {
+        player.setPitch(1.0f);
+        player.setSpeed(1.0f);
+    }
+
+    public void setSpeed(View view) throws RemoteException {
+        player.setSpeed(1.5f);
+    }
+
+    public void setPitch(View view) throws RemoteException {
+
+        player.setPitch(1.5f);
+    }
+
+    public void sterao(View view) throws RemoteException {
+        player.steroVoice();
     }
 }

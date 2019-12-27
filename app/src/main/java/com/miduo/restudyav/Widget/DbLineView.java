@@ -71,7 +71,7 @@ public class DbLineView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.WHITE);
         for(int i=0;i<datas.size();i++)
         {
             PointF pointF=datas.get(i);

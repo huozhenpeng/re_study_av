@@ -7,6 +7,16 @@
     android:background="@mipmap/background"
     tools:context=".ReleaseMainActivity">
 
+    <com.miduo.restudyav.Widget.DbLineView
+        android:id="@+id/lineview"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="200dp"
+        />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,13 +28,151 @@
         android:layout_marginBottom="20dp"
         >
 
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/ll_special"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:flexWrap="wrap"
+            app:alignItems="stretch"
+            app:alignContent="stretch"
+            >
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="立体声"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="sterao"
+                />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="左声道"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="leftVoice"
+                />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="右声道"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="rightVoice"
+                />
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="1.5倍速"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="setSpeed"
+                />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="变调"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="setPitch"
+                />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="恢复"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="reverse"
+                />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="裁剪"
+                android:background="@drawable/oval"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:onClick="special"
+                />
+        </com.google.android.flexbox.FlexboxLayout>
+
+
+        <TextView
+            android:id="@+id/tv_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_special"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            tools:text="00:00"
+            android:textColor="#ffffff"
+            />
+
+        <TextView
+            android:id="@+id/tv_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/tv_start"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="10dp"
+            tools:text="00:00"
+            android:textColor="#ffffff"
+            />
+
         <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/progress_seek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_start"
             app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="10dp"
             />
 
         <ImageView
