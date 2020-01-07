@@ -1,6 +1,7 @@
 //
 // Created by 霍振鹏 on 2019-12-24.
 //
+
 #include "HAudio.h"
 
 HAudio::HAudio(HPlayStatus *hPlayStatus,CallBackJava *callBackJava) {
@@ -35,6 +36,7 @@ void * product(void *data) {
         //如果是在seek的话，就暂停解码操作，我们在seek的时候还需要清空队列，所以就不要再解码了
         if(hAudio->playStatus->seek)
         {
+            av_usleep(1000*100);//100ms
             continue;
         }
         /**
@@ -45,6 +47,7 @@ void * product(void *data) {
          */
         if(hAudio->hQueue->getQueueSize()>40)
         {
+            av_usleep(1000*100);//100ms
             continue;
         }
         AVPacket *avPacket=av_packet_alloc();
@@ -81,6 +84,7 @@ void * product(void *data) {
                 {
                     //如果对列中还有数据没有播放完成，就循环等待，并没有清空队列
                     //所以在下面才可以进行播放完成回调
+                    av_usleep(1000*100);//100ms
                     continue;
                 } else{
                     hAudio->playStatus->exit=true;
@@ -128,6 +132,7 @@ int resampleAudio(HAudio *hAudio,void **pcmbuf) {
         }
         if(hAudio->playStatus->seek)
         {
+            av_usleep(1000*100);//100ms
             continue;
         }
         AVPacket *avPacket=av_packet_alloc();
@@ -382,10 +387,11 @@ void HAudio::initOpenSLES() {
 
     //第二个参数是管音量的，如果没有控制音量的需求，可以不写
     //第三个参数是控制声道的
-    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE,SL_IID_VOLUME,SL_IID_MUTESOLO};
-    const SLboolean req[3] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
 
-    (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk, 3, ids, req);
+    const SLInterfaceID ids[4] = {SL_IID_BUFFERQUEUE,SL_IID_VOLUME,SL_IID_MUTESOLO,SL_IID_MUTESOLO};
+    const SLboolean req[4] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
+
+    (*engineEngine)->CreateAudioPlayer(engineEngine, &pcmPlayerObject, &slDataSource, &audioSnk, 4, ids, req);
     //初始化播放器
     (*pcmPlayerObject)->Realize(pcmPlayerObject, SL_BOOLEAN_FALSE);
 
@@ -485,6 +491,10 @@ void HAudio::release() {
         pcmPlayerObject=NULL;
         pcmPlayerPlay=NULL;
         pcmBufferQueue=NULL;
+
+        //优化
+        pcmPlayPlayerMuteSolo=NULL;
+        pcmVolumePlay=NULL;
     }
     if(outputMixObject!=NULL)
     {
@@ -503,6 +513,25 @@ void HAudio::release() {
         free(buffer);
         buffer=NULL;
     }
+
+
+    //优化
+    if(out_buffer!=NULL)
+    {
+        out_buffer=NULL;
+    }
+    if(soundTouch!=NULL)
+    {
+        delete soundTouch;
+        soundTouch=NULL;
+    }
+    if(sampleBuffer!=NULL)
+    {
+        free(sampleBuffer);
+        sampleBuffer=NULL;
+    }
+    //
+
     if(avCodecContext!=NULL)
     {
         avcodec_close(avCodecContext);
